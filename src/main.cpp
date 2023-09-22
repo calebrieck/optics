@@ -89,8 +89,8 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
 
-    glGenVertexArrays(1, &VAO);      // Generate the VAO
-    glBindVertexArray(VAO);          // Bind the VAO
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);      
 
 
     glEnableVertexAttribArray(0);
@@ -122,7 +122,8 @@ int main(void) {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+    
+    glDeleteProgram(shader);
     glfwDestroyWindow(window);
     glfwTerminate();
 
