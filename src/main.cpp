@@ -2,8 +2,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <OpenGL/gl3.h>
-
 #include <iostream>
+
+const int WINDOW_WIDTH = 600;
+const int WINDOW_HEIGHT = 600;
+
 
 static unsigned int compileShader(unsigned int type, const std::string& source){
     unsigned int id = glCreateShader(type);
@@ -59,7 +62,7 @@ int main(void) {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(600, 600, "Optics", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_WIDTH, "Optics", NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
@@ -80,8 +83,11 @@ int main(void) {
     float positions[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f, //bottom right tri
 
+        -0.5f, -0.5f, 0.0f,
+        -0.5f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f,
     };
 
     unsigned int VBO, VAO;
@@ -109,7 +115,9 @@ int main(void) {
         "layout(location = 0) out vec4 color;\n"
         "void main()\n"
         "{\n"
-        "   color = vec4 (0.53, 1.0, 0.53, 1.0);\n"
+        "vec3 fragmentPosition = vec3(gl_FragCoord.x, gl_FragCoord.y, 0.0);\n"
+        "vec3 normalizedPosition = fragmentPosition / vec3(600, 600, 1.0);\n"
+        "color = vec4(normalizedPosition, 1.0);\n"
         "}\n";
 
     unsigned int shader = createShader(vertexShader, fragmentShader);
@@ -118,7 +126,7 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
